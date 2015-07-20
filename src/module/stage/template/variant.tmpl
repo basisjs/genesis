@@ -1,0 +1,16 @@
+<b:style src="./variant.css"/>
+<b:isolate/>
+<b:define name="isBlock" type="bool"/>
+
+<div class="variant">
+  <div>
+    <span class="header">
+      {condition}
+    </span>
+  </div>
+  <div class="content-wrapper content-wrapper_{isBlock}">
+    <div class="content">
+      <!--{html}-->
+    </div>
+  </div>
+</div>

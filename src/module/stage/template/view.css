@@ -1,0 +1,56 @@
+.stage
+{
+
+}
+
+.header
+{
+  font-size: 16px;
+  padding: 8px 16px;
+}
+
+/*
+.xx, .yy
+{
+  background: gray;
+  width: 50px;
+  height: 50px;
+}
+.xx:hover
+{
+  background: gold;
+}
+.xx:hover:after
+{
+  content: '';
+  width: 50px;
+  height: 50px;
+  background: red;
+}
+.xx:active
+{
+  background: green;
+}
+.xx:focus1
+{
+  background: red;
+}
+
+.yy
+{
+  position: relative;
+  top: 100px;
+}
+.yy:hover
+{
+  background: gold;
+}
+.yy:active
+{
+  background: green;
+}
+.yy:focus1
+{
+  background: red;
+}
+*/

@@ -1,0 +1,46 @@
+.window_wrapper
+{
+  position: fixed;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0;
+  bottom: 0;
+  margin: 0 !important;
+  text-align: center;
+  white-space: nowrap;
+}
+.window_wrapper:before
+{
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.window
+{
+  /* vertical center */
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+  /* restore inherit properties*/
+  text-align: left;
+  white-space: normal;
+
+  /* style */
+  background: rgba(255, 255, 255, .25);
+  border-radius: 5px;
+  padding: 5px;
+}
+.header
+{
+  font-weight: bold;
+  font-size: 130%;
+}
+.content
+{
+  background: white;
+  border-radius: 2px;
+  padding: 20px 40px;
+  overflow: hidden;
+}

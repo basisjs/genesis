@@ -1,0 +1,22 @@
+.item
+{
+  display: inline-block;
+  vertical-align: middle;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #888;
+  margin-left: 6px;
+}
+.item:hover
+{
+  outline: 2px solid gold;
+  cursor: pointer;
+}
+.item_selected,
+.item_selected:hover
+{
+  margin: -2px -2px -2px 4px;
+  outline: none;
+  border: 3px solid gold;
+  cursor: default;
+}

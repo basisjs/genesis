@@ -1,0 +1,14 @@
+.button
+{
+  border-color: #3bafda;
+  background-color: #fff;
+  color: #3bafda;
+}
+.button_disabled,
+.button_disabled:hover,
+.button_disabled:active
+{
+  border-color: #D8EFF8;
+  background-color: #fff;
+  color: #CDEBF6;
+}

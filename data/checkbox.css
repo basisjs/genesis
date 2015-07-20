@@ -1,0 +1,106 @@
+.checkbox
+{
+  display: inline-block;
+  padding: 5px 0;
+  margin-right: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.checkbox_disabled
+{
+  cursor: default;
+}
+
+.icon
+{
+  display: inline-block;
+  vertical-align: middle;  
+  position: relative;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  background: white;
+  border: 1px solid #CCD1D9;
+  border-radius: 3px;
+  outline: none;
+  transition: border-width .12s ease-out, border-color .3s .1s;
+}
+.icon_checked,
+.icon[checked]
+{
+  /*background: #FFCE54 url(img/check.png) no-repeat center;*/
+  border-width: 8px;
+  border-color: #FFCE54;
+  transition: border .125s;
+}
+.icon:after
+{
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  width: 16px;
+  height: 16px;
+  background: url(img/check.png) no-repeat center;
+  opacity: 0;
+  transition: opacity .12s;
+}
+.icon_checked:after,
+.icon[checked]:after
+{
+  opacity: 1;
+  transition: opacity .25s .075s;
+}
+.icon:hover,
+.checkbox:hover > .icon
+{
+  box-shadow: 0 0 2px 1px rgba(204, 209, 217, .3);
+}
+.icon:focus,
+.checkbox:hover > .icon:focus
+{
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .75),
+    0 0 4px 3px rgba(255, 206, 84, .65);
+}
+.icon_disabled,
+.checkbox:hover > .icon_disabled
+{
+  background: white;
+  border-color: #F2F4F7;
+  box-shadow: none;
+}
+.icon_checked.icon_disabled,
+.checkbox:hover > .icon_checked.icon_disabled,
+.icon[checked].icon_disabled,
+.checkbox:hover > .icon[checked].icon_disabled
+{
+  opacity: .3;
+  border-color: #FFCE54;
+}
+
+.caption
+{
+  vertical-align: middle;
+}
+.caption_disabled
+{
+  color: #CCCCCC;
+}
+
+.error
+{
+  clear: both;
+  color: #e9573f;
+  font-size: 11px;
+  padding-top: 6px;
+  padding-bottom: 0px;
+  display: block;
+  margin-right: -500px;
+}

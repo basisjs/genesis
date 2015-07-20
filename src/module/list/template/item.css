@@ -1,0 +1,17 @@
+.item
+{
+  padding: 5px 10px;
+  margin: 1px;
+  background: #EEE;
+  cursor: pointer;
+}
+.item:hover
+{
+  background: #DDD;
+}
+.item_selected,
+.item_selected:hover
+{
+  background: gold;
+  cursor: default;
+}

@@ -1,0 +1,19 @@
+.button
+{
+  background-color: #a0d468;
+}
+.button:hover
+{
+  background-color: #b2e57a;
+}
+.button:active
+{
+  background-color: #8cc152;
+}
+.button_disabled,
+.button_disabled:hover,
+.button_disabled:active
+{
+  background-color: rgba(160, 212, 104, .2);
+  color: #fff;
+}

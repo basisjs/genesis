@@ -1,0 +1,63 @@
+{
+    "requireCurlyBraces": ["do", "try", "catch"],
+
+    "requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try"],
+    "disallowSpaceAfterKeywords": ["catch"],
+
+    "requireParenthesesAroundIIFE": true,
+
+    "disallowSpacesInFunctionExpression": {
+        "beforeOpeningRoundBrace": true,
+        "beforeOpeningCurlyBrace": true
+    },
+
+    "disallowMultipleVarDecl": true,
+    "disallowEmptyBlocks": true,
+
+    "requireSpacesInsideObjectBrackets": "all",
+    "disallowSpacesInsideArrayBrackets": true,
+    "disallowSpacesInsideParentheses": true,
+
+    "disallowSpaceAfterObjectKeys": true,
+
+    "requireCommaBeforeLineBreak": true,
+
+    "disallowSpaceAfterBinaryOperators": ["!"],
+    "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "!"],
+    "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+
+    "requireSpacesInConditionalExpression": true,
+    "requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+    "requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+
+    "requireOperatorBeforeLineBreak": ["/", "*", "&&", "||", "&", "|", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+
+    "disallowImplicitTypeConversion": ["string", "binary"],
+
+    "disallowMultipleLineStrings": true,
+    "validateQuoteMarks": "'",
+    "requireSemicolons": true,
+
+    "disallowMixedSpacesAndTabs": true,
+    "disallowTrailingWhitespace": true,
+    "validateLineBreaks": "LF",
+    "requireLineFeedAtFileEnd": true,
+
+    "disallowKeywords": ["with", "eval"],
+    "requireKeywordsOnNewLine": ["else", "while", "for", "do", "return", "switch", "case", "try", "break"],
+    "disallowKeywordsOnNewLine": ["catch"],
+    "requireCapitalizedConstructors": true,
+
+    "requireDotNotation": true,
+
+    "validateJSDoc": {
+        //"checkRedundantParams": true,
+        "checkParamNames": true,
+        "requireParamTypes": true
+    },
+
+    "excludeFiles": [
+        "node_modules/**",
+        "src/app/utils/**"
+    ]
+}

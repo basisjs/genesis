@@ -1,0 +1,64 @@
+.variant
+{
+  margin: 16px;
+  position: relative;
+}
+
+.header
+{
+  display: inline-block;
+  color: #888;
+  background: rgba(255, 255, 255, .8);
+  padding: 4px;
+  line-height: 1;
+}
+
+.content-wrapper
+{
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin: 8px 0 16px;
+  padding: 20px;
+}
+.content-wrapper_isBlock
+{
+  display: block;
+}
+.content
+{
+  position: relative;
+  display: block;
+  z-index: 1;
+}
+
+.content-wrapper:before,
+.content-wrapper:after
+{
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 20px;
+  bottom: 20px;
+  z-index: 0;
+
+  content: '';
+  color: #888;
+  background-repeat: no-repeat;
+  background-position: left top, right top, left bottom, right bottom;
+  background-image:
+    linear-gradient(to right, currentColor, currentColor),
+    linear-gradient(to right, currentColor, currentColor),
+    linear-gradient(to right, currentColor, currentColor),
+    linear-gradient(to right, currentColor, currentColor);
+}
+.content-wrapper:before
+{
+  background-size: 8px 1px;
+  margin: 0 -10px;
+}
+.content-wrapper:after
+{
+  background-size: 1px 8px;
+  margin: -10px 0;
+}

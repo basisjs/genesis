@@ -1,0 +1,22 @@
+.button
+{
+  background-color: #ffce54;
+  color: inherit;
+}
+.button:hover
+{
+  background-color: #fcd77b;
+  color: inherit;
+}
+.button:active
+{
+  background-color: #ffc021;
+  color: inherit;
+}
+.button_disabled,
+.button_disabled:hover,
+.button_disabled:active
+{
+  background-color: rgba(255, 206, 83, .2);
+  color: inherit;
+}

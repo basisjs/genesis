@@ -1,0 +1,19 @@
+{
+  "name": "genesis",
+  "title": "Genesis",
+  "version": "0.0.0",
+  "description": "Template state generator",
+  "repository": "-",
+  "dependencies": {
+    "basisjs": "basisjs/basisjs#55664e86647df284f10a68ae21db16502d95b3fe"
+  },
+  "devDependencies": {
+    "basisjs-tools": "1.4",
+    "basisjs-tools-instrumenter": "restrry/basisjs-tools-instrumenter",
+    "jscs": "1.13.0"
+  },
+  "scripts": {
+    "lint": "node ./node_modules/jscs/bin/jscs . && node ./node_modules/basisjs-tools/bin/basis lint --js-cut-dev",
+    "test": "npm run lint"
+  }
+}

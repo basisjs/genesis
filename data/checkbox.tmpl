@@ -1,0 +1,14 @@
+<b:style src="./checkbox.css"/>
+<b:isolate/>
+<b:define name="disabled" type="bool"/>
+<b:define name="checked" type="bool"/>
+
+<span b:hide="{hidden}" class="checkbox checkbox_{disabled}" role="checkbox" event-click="toggle" event-keydown="toggleByKey">
+  <span{field|focus} class="icon icon_{checked} icon_{disabled}" tabindex="{tabindex}"/>
+  <span{content} class="caption caption_{disabled}">
+    {title}
+  </span>
+  <span b:show="{error}" class="error">
+    {error}
+  </span>
+</span>

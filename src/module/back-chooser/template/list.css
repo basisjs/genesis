@@ -1,0 +1,10 @@
+.list
+{
+  float: right;
+  position: relative;
+  z-index: 100;
+  padding: 8px;
+  vertical-align: middle;
+  line-height: 1;
+  background: rgba(255, 255, 255, .5);
+}

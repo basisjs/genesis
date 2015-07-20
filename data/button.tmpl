@@ -1,0 +1,11 @@
+<b:style src="./button.css"/>
+<b:style src="./button-green.css" options="color: green"/>
+<b:style src="./button-empty.css" options="color: empty"/>
+<b:style src="./button-white.css" options="color: white"/>
+<b:style src="./button-yellow.css" options="color: yellow"/>
+<b:define name="disabled" type="bool"/>
+<b:isolate/>
+
+<span class="button button_{disabled}" tabindex="{tabindex}" event-click="click">
+  {caption}
+</span>
