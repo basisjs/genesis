@@ -109,14 +109,12 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
     emulateState.forEach(function(pseudoState){
       var stateCount = pseudoState.states.length;
       var stateCombinationCount = 1 << stateCount;
-      var stateNum = 0;
 
       for (var stateNum = 1; stateNum < stateCombinationCount; stateNum++)
       {
         var candidate = buildVariant(decl, state);
         try {
           var elements = candidate.html.querySelectorAll(pseudoState.selector);
-          var idx = 0;
 
           if (!elements.length)
             continue;
@@ -131,7 +129,7 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
             }
 
           addVariant(variants, candidate);
-        } catch(e) {
+        } catch(e){
           console.error('Can\'t generate state: ', e);
         }
       }
@@ -150,20 +148,20 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
     comb(decl, variants, combState, sequence, emulateState, emulateElement);
   }
 
-  variants.forEach(function(variant) {
+  variants.forEach(function(variant){
     emulateElement.forEach(function(emulation){
       var targetElements = variant.html.querySelectorAll(emulation.selector);
 
       if (!targetElements.length)
         return;
 
-      targetElements.forEach(function(element) {
-        emulation.elements.forEach(function(pseudo) {
+      targetElements.forEach(function(element){
+        emulation.elements.forEach(function(pseudo){
           var emulator = document.createElement('span');
           emulator.innerText = pseudo.content || '';
           emulator.className = pseudo.className;
 
-          if(pseudo.prepend && element.firstChild)
+          if (pseudo.prepend && element.firstChild)
           {
             element.insertBefore(emulator, element.firstChild);
           }
@@ -235,12 +233,12 @@ function rebuildStage(){
             // есть ли в данном блоке правило 'content'?
             var contentRule = basis.array.search(token.block.declarations.toArray(), 'content', 'property.name');
 
-            if(contentRule)
+            if (contentRule)
             {
               // транслируем
               var ruleValue = translate(contentRule.value);
               // если строка, то нужно отбросить кавычки
-              if(typeof ruleValue == 'string')
+              if (typeof ruleValue == 'string')
               {
                 ruleValue = ruleValue .slice(1, -1);
               }
@@ -249,7 +247,7 @@ function rebuildStage(){
                 // чтобы не перебирать всю иерархию emulateElementMap, разворачиваем его в одномерный массив
                 basis.array.flatten(basis.object.values(emulateElementMap)).forEach(function(pseudoElement){
                   // если найден токен соответствующий текущему эмулируемому элементу, то запоминаем значение правила content
-                  if(pseudoElement.token == item)
+                  if (pseudoElement.token == item)
                   {
                     pseudoElement.content = ruleValue;
                   }
@@ -257,8 +255,8 @@ function rebuildStage(){
               });
             }
           },
-          SimpleSelector: function(token, item, list){
-            var hasPseudo = token.sequence.some(function (t) {
+          SimpleSelector: function(token){
+            var hasPseudo = token.sequence.some(function(t){
               return !t.type.indexOf('Pseudo');
             });
 
@@ -267,8 +265,9 @@ function rebuildStage(){
 
             var group = [];
             var parts = [group];
-            token.sequence.each(function (t) {
-              if(t.type == 'String' || t.type == 'Combinator') {
+            token.sequence.each(function(t){
+              if (t.type == 'String' || t.type == 'Combinator')
+              {
                 if (!group.length)
                   return;
 
@@ -278,7 +277,7 @@ function rebuildStage(){
                   group.push(t);
               }
               else
-                group.push(t)
+                group.push(t);
             });
 
             if (!group.length)
@@ -304,7 +303,8 @@ function rebuildStage(){
                     return;
                   }
 
-                  if (p.name == 'active') {
+                  if (p.name == 'active')
+                  {
                     states.push({
                       name: 'active',
                       className: ACTIVE,
@@ -316,7 +316,7 @@ function rebuildStage(){
                   }
                 }
 
-                if(p.type == 'PseudoClass' || p.type == 'PseudoElement')
+                if (p.type == 'PseudoClass' || p.type == 'PseudoElement')
                 {
                   if (p.name == 'before')
                   {
@@ -325,6 +325,7 @@ function rebuildStage(){
                       className: BEFORE,
                       prepend: true,
                       // токен нужен для того, чтобы позже получить значение правила content
+                      // у качестве альтернативы, можно использовать KeyObjectMap
                       token: p
                     });
                     // трансформируем во вложенный селектор
@@ -338,7 +339,6 @@ function rebuildStage(){
                     elements.push({
                       name: 'after',
                       className: AFTER,
-                      // токен нужен для того, чтобы позже получить значение правила content
                       token: p
                     });
                     // трансформируем во вложенный селектор
@@ -356,7 +356,8 @@ function rebuildStage(){
               if (nopseudo.length != parts[i].length)
               {
                 var currentSelector = selector.join(' ');
-                if (currentSelector) {
+                if (currentSelector)
+                {
                   states.forEach(function(state){
                     if (!hasOwnProperty.call(emulateClassMap, currentSelector))
                       emulateClassMap[currentSelector] = [];
