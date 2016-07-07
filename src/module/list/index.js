@@ -28,7 +28,8 @@ module.exports = new Node({
     'node_modules/basisjs/src/basis/ui/templates/paginator/PaginatorNode.tmpl',
     'data/button.tmpl',
     'data/checkbox.tmpl',
-    'data/window.tmpl'
+    'data/window.tmpl',
+    'data/test.tmpl'
   ].map(function(url){
     return {
       data: {

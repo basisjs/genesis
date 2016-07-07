@@ -4,16 +4,19 @@ var router = require('basis.router');
 var makeDeclaration = require('basis.template.declaration').makeDeclaration;
 var builder = require('basis.template.html').Template.prototype.builder;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
-var parse = require('app:utils/parser.js');
-var translate = require('app:utils/translate.js');
-var walker = require('app:utils/walker.js');
+var parse = require('csso:parser/index');
+var translate = require('csso:utils/translate.js');
+var walker = require('csso:utils/walk.js');
+var List = require('csso:utils/list.js');
 var domUtils = require('basis.dom');
 var HOVER = 'hover__' + basis.genUID();
 var ACTIVE = 'active__' + basis.genUID();
+var BEFORE = 'before__' + basis.genUID();
+var AFTER = 'after__' + basis.genUID();
 
 var walk = function(ast, handlers, context){
-  return walker(ast, function(token, parent, stack){
-    var handler = typeof handlers == 'function' ? handlers : handlers[token[0]];
+  return walker.all(ast, function(token, parent, stack){
+    var handler = typeof handlers == 'function' ? handlers : handlers[token.type];
 
     if (typeof handler == 'function')
       handler.call(context, token, parent, stack);
@@ -99,7 +102,7 @@ function addVariant(variants, candidate){
     variants.ignored.push(candidate);
 }
 
-function comb(decl, variants, state, sequence, emulateState){
+function comb(decl, variants, state, sequence, emulateState, emulateElement){
   if (!sequence.length)
   {
     addVariant(variants, buildVariant(decl, state));
@@ -144,8 +147,34 @@ function comb(decl, variants, state, sequence, emulateState){
   {
     var combState = basis.object.slice(state);
     combState[info.name] = info.values[i];
-    comb(decl, variants, combState, sequence, emulateState);
+    comb(decl, variants, combState, sequence, emulateState, emulateElement);
   }
+
+  variants.forEach(function(variant) {
+    emulateElement.forEach(function(emulation){
+      var targetElements = variant.html.querySelectorAll(emulation.selector);
+
+      if (!targetElements.length)
+        return;
+
+      targetElements.forEach(function(element) {
+        emulation.elements.forEach(function(pseudo) {
+          var emulator = document.createElement('span');
+          emulator.innerText = pseudo.content || '';
+          emulator.className = pseudo.className;
+
+          if(pseudo.prepend && element.firstChild)
+          {
+            element.insertBefore(emulator, element.firstChild);
+          }
+          else
+          {
+            element.appendChild(emulator);
+          }
+        });
+      });
+    });
+  });
 }
 
 var currentStyles = [];
@@ -170,8 +199,10 @@ function rebuildStage(){
     var decl = makeDeclaration(source.fetch(), basis.path.dirname(url), null, url);
     var bindings = decl.states;
     var sequence = [];
-    var emulateMap = {};
+    var emulateClassMap = {};
+    var emulateElementMap = {};
     var emulateState;
+    var emulateElement;
 
     // template bindings
     for (var name in bindings)
@@ -199,29 +230,56 @@ function rebuildStage(){
         var ast = parse(resource.fetch().cssText);
 
         walk(ast, {
-          simpleselector: function(token){
-            var noPseudoc = token.every(function(t){
-              return t[0] != 'pseudoc';
+          // суть данного блока - вынуть значение правила content для before/after и подставить в эмулирующие элементы
+          Ruleset: function(token){
+            // есть ли в данном блоке правило 'content'?
+            var contentRule = basis.array.search(token.block.declarations.toArray(), 'content', 'property.name');
+
+            if(contentRule)
+            {
+              // транслируем
+              var ruleValue = translate(contentRule.value);
+              // если строка, то нужно отбросить кавычки
+              if(typeof ruleValue == 'string')
+              {
+                ruleValue = ruleValue .slice(1, -1);
+              }
+              // перебираем селекторы для данного набора провил
+              token.selector.selectors.first().sequence.each(function(item){
+                // чтобы не перебирать всю иерархию emulateElementMap, разворачиваем его в одномерный массив
+                basis.array.flatten(basis.object.values(emulateElementMap)).forEach(function(pseudoElement){
+                  // если найден токен соответствующий текущему эмулируемому элементу, то запоминаем значение правила content
+                  if(pseudoElement.token == item)
+                  {
+                    pseudoElement.content = ruleValue;
+                  }
+                });
+              });
+            }
+          },
+          SimpleSelector: function(token, item, list){
+            var hasPseudo = token.sequence.some(function (t) {
+              return !t.type.indexOf('Pseudo');
             });
 
-            if (noPseudoc)
+            if (!hasPseudo)
               return;
 
             var group = [];
             var parts = [group];
-            for (var i = 1; i < token.length; i++)
-              if (token[i][0] == 's' || token[i][0] == 'combinator')
-              {
+            token.sequence.each(function (t) {
+              if(t.type == 'String' || t.type == 'Combinator') {
                 if (!group.length)
-                  continue;
+                  return;
 
                 group = [];
                 parts.push(group);
-                if (token[i][0] == 'combinator')
-                  group.push(token[i]);
+                if (t.type == 'Combinator')
+                  group.push(t);
               }
               else
-                group.push(token[i]);
+                group.push(t)
+            });
 
             if (!group.length)
               parts.pop();
@@ -230,48 +288,89 @@ function rebuildStage(){
             for (var i = 0; i < parts.length; i++)
             {
               var states = [];
+              var elements = [];
               var nopseudo = parts[i].filter(function(p){
-                if (p[0] == 'pseudoc')
+                if (p.type == 'PseudoClass')
                 {
-                  if (p[1][1] == 'hover')
+                  if (p.name == 'hover')
                   {
                     states.push({
                       name: 'hover',
                       className: HOVER,
                       values: [false, true]
                     });
-                    p[0] = 'clazz';
-                    p[1][1] = HOVER;
+                    p.type = 'Class';
+                    p.name = HOVER;
                     return;
                   }
-                  if (p[1][1] == 'active')
-                  {
+
+                  if (p.name == 'active') {
                     states.push({
                       name: 'active',
                       className: ACTIVE,
                       values: [false, true]
                     });
-                    p[0] = 'clazz';
-                    p[1][1] = ACTIVE;
-                    return true;
+                    p.type = 'Class';
+                    p.name = ACTIVE;
+                    return;
                   }
                 }
-                return p[0] != 'pseudoc';
+
+                if(p.type == 'PseudoClass' || p.type == 'PseudoElement')
+                {
+                  if (p.name == 'before')
+                  {
+                    elements.push({
+                      name: 'before',
+                      className: BEFORE,
+                      prepend: true,
+                      // токен нужен для того, чтобы позже получить значение правила content
+                      token: p
+                    });
+                    // трансформируем во вложенный селектор
+                    p.type = 'SimpleSelector';
+                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Class', name: BEFORE}]);
+                    return;
+                  }
+
+                  if (p.name == 'after')
+                  {
+                    elements.push({
+                      name: 'after',
+                      className: AFTER,
+                      // токен нужен для того, чтобы позже получить значение правила content
+                      token: p
+                    });
+                    // трансформируем во вложенный селектор
+                    p.type = 'SimpleSelector';
+                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Class', name: AFTER}]);
+                    return;
+                  }
+                }
+
+                return true;
               });
 
-              selector.push(translate(['simpleselector'].concat(nopseudo)));
+              selector.push(translate({type: 'SimpleSelector', sequence: new List(nopseudo)}));
 
               if (nopseudo.length != parts[i].length)
               {
                 var currentSelector = selector.join(' ');
-                if (currentSelector)
+                if (currentSelector) {
                   states.forEach(function(state){
-                    if (!hasOwnProperty.call(emulateMap, currentSelector))
-                      emulateMap[currentSelector] = [];
-                    if (!basis.array.search(emulateMap[currentSelector], state.name, 'name'))
-                      emulateMap[currentSelector].push(state);
+                    if (!hasOwnProperty.call(emulateClassMap, currentSelector))
+                      emulateClassMap[currentSelector] = [];
+                    if (!basis.array.search(emulateClassMap[currentSelector], state.name, 'name'))
+                      emulateClassMap[currentSelector].push(state);
                   });
 
+                  elements.forEach(function(element){
+                    if (!hasOwnProperty.call(emulateElementMap, currentSelector))
+                      emulateElementMap[currentSelector] = [];
+                    if (!basis.array.search(emulateElementMap[currentSelector], element.name, 'name'))
+                      emulateElementMap[currentSelector].push(element);
+                  });
+                }
                 //selectors.push(selector.join(' '));
                 //console.log('>>', selector.join(' '));
               }
@@ -295,10 +394,16 @@ function rebuildStage(){
         });
       }
 
-    emulateState = basis.object.iterate(emulateMap, function(selector, states){
+    emulateState = basis.object.iterate(emulateClassMap, function(selector, states){
       return {
         selector: selector,
         states: states
+      };
+    });
+    emulateElement = basis.object.iterate(emulateElementMap, function(selector, elements){
+      return {
+        selector: selector,
+        elements: elements
       };
     });
 
@@ -307,7 +412,7 @@ function rebuildStage(){
     decl.builder = builder.call({ source: source }, decl.tokens, decl.instances);
 
     // build combinations
-    comb(decl, variants, {}, sequence, emulateState);
+    comb(decl, variants, {}, sequence, emulateState, emulateElement);
   }
 
   view.setChildNodes(variants);

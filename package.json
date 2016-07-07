@@ -5,7 +5,8 @@
   "description": "Template state generator",
   "repository": "-",
   "dependencies": {
-    "basisjs": "basisjs/basisjs#55664e86647df284f10a68ae21db16502d95b3fe"
+    "basisjs": "basisjs/basisjs#7a2052d5e86416dd0fdcdf182c329f90a607e8df",
+    "csso": "^2.2.0"
   },
   "devDependencies": {
     "basisjs-tools": "1.4",
