@@ -11,8 +11,8 @@ var List = require('csso:utils/list.js');
 var domUtils = require('basis.dom');
 var HOVER = 'hover__' + basis.genUID();
 var ACTIVE = 'active__' + basis.genUID();
-var BEFORE = 'before__' + basis.genUID();
-var AFTER = 'after__' + basis.genUID();
+var BEFORE = 'pseudo-before__' + basis.genUID();
+var AFTER = 'pseudo-after__' + basis.genUID();
 
 var walk = function(ast, handlers, context){
   return walker.all(ast, function(token, parent, stack){
@@ -157,9 +157,8 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
 
       targetElements.forEach(function(element){
         emulation.elements.forEach(function(pseudo){
-          var emulator = document.createElement('span');
+          var emulator = document.createElement(pseudo.className);
           emulator.innerText = pseudo.content || '';
-          emulator.className = pseudo.className;
 
           if (pseudo.prepend && element.firstChild)
           {
@@ -330,7 +329,7 @@ function rebuildStage(){
                     });
                     // трансформируем во вложенный селектор
                     p.type = 'SimpleSelector';
-                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Class', name: BEFORE}]);
+                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Identifier', name: BEFORE}]);
                     return;
                   }
 
@@ -343,7 +342,7 @@ function rebuildStage(){
                     });
                     // трансформируем во вложенный селектор
                     p.type = 'SimpleSelector';
-                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Class', name: AFTER}]);
+                    p.sequence = new List([{type: 'Combinator', name: ' '}, {type: 'Identifier', name: AFTER}]);
                     return;
                   }
                 }
