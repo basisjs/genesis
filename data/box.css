@@ -17,6 +17,9 @@
 
 .test:after {
   content: 'after';
+  /*content: 222;*/
+  /*content: "("attr(class)")";*/
+  /*content: "("url(http://htmlbook.ru/themes/hb/img/logo.png)")";*/
   display: block;
   box-shadow: 10px 10px 10px green;
 }

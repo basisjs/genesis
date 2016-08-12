@@ -158,7 +158,11 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
       targetElements.forEach(function(element){
         emulation.elements.forEach(function(pseudo){
           var emulator = document.createElement(pseudo.className);
-          emulator.innerText = pseudo.content || '';
+
+          if(pseudo.beforeAppend)
+          {
+            pseudo.beforeAppend(emulator);
+          }
 
           if (pseudo.prepend && element.firstChild)
           {
@@ -168,10 +172,55 @@ function comb(decl, variants, state, sequence, emulateState, emulateElement){
           {
             element.appendChild(emulator);
           }
+
+          if(pseudo.afterAppend)
+          {
+            pseudo.afterAppend(emulator);
+          }
         });
       });
     });
   });
+}
+
+function pseudoContentFactory(pseudoContent) {
+  return function contentHandler(element) {
+    pseudoContent.value.sequence.each(function(part) {
+      switch (part.type) {
+        case 'Url':
+          var image = new Image();
+          image.src = part.value.value;
+          element.appendChild(image);
+          break;
+        case 'Number':
+          element.appendChild(document.createTextNode(part.value));
+          break;
+        case 'String':
+          element.appendChild(document.createTextNode(part.value.slice(1, -1)));
+          break;
+        case 'Function':
+          var name = part.name;
+          var args = part.arguments.map(function(arg) {
+            return translate(arg);
+          });
+
+          if (name == 'attr' && args[0]) {
+            element.appendChild(document.createTextNode(element.parentNode.getAttribute(args[0])));
+          }
+          break;
+        case 'Identifier':
+          // todo:
+          // counter
+          // open-quote
+          // close-quote
+          // no-open-quote
+          // no-close-quote
+          // initial
+          // inherit
+        break;
+      }
+    });
+  }
 }
 
 var currentStyles = [];
@@ -234,13 +283,6 @@ function rebuildStage(){
 
             if (contentRule)
             {
-              // транслируем
-              var ruleValue = translate(contentRule.value);
-              // если строка, то нужно отбросить кавычки
-              if (typeof ruleValue == 'string')
-              {
-                ruleValue = ruleValue .slice(1, -1);
-              }
               // перебираем селекторы для данного набора провил
               token.selector.selectors.first().sequence.each(function(item){
                 // чтобы не перебирать всю иерархию emulateElementMap, разворачиваем его в одномерный массив
@@ -248,7 +290,7 @@ function rebuildStage(){
                   // если найден токен соответствующий текущему эмулируемому элементу, то запоминаем значение правила content
                   if (pseudoElement.token == item)
                   {
-                    pseudoElement.content = ruleValue;
+                    pseudoElement.afterAppend = pseudoContentFactory(contentRule);
                   }
                 });
               });

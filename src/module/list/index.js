@@ -29,7 +29,7 @@ module.exports = new Node({
     'data/button.tmpl',
     'data/checkbox.tmpl',
     'data/window.tmpl',
-    'data/test.tmpl'
+    'data/box.tmpl'
   ].map(function(url){
     return {
       data: {
