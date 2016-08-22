@@ -1,0 +1,68 @@
+.button
+{
+  display: inline-block;
+  background: #4B77CC;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.caption
+{
+  color: white;
+  font-size: 18px;
+}
+
+.button:focus
+{
+  box-shadow: 5px 5px 5px gray;
+}
+
+.button:active
+{
+  background: lightcoral;
+}
+
+.button:hover .caption
+{
+  text-decoration: underline;
+}
+
+.button:hover .caption:active
+{
+  font-size: 30px;
+}
+
+.button:hover .caption:active::before
+{
+  content: 'must be overriden';
+}
+
+.button:hover .caption:active::after
+{
+  content: 'must be overriden';
+}
+
+.button:hover .caption:active::before
+{
+  content: '[ ';
+}
+
+.button:hover .caption:active::after
+{
+  content: ' ]';
+}
+
+.button_disabled
+{
+  background: #89ACF0;
+}
+
+.button_disabled::after
+{
+  content: "-" url(http://wallpapercraze.com/images/delete-icon_small.png) "-" url(http://wallpapercraze.com/images/delete-icon_small.png) "-";
+}
