@@ -1,5 +1,5 @@
 var List = require('csso:utils/list.js');
-var walk = require('utils.walker');
+var walk = require('utils.walker').rules;
 var translate = require('csso:utils/translate.js');
 var pseudoContentFactory = require('./contentFactory');
 
@@ -13,8 +13,8 @@ module.exports = function pseudoElementFactory(type, before) {
     handleToken: function(token, parent, root, sourceMap) {
       if (token.type == 'PseudoElement' && token.name == type) {
         token.type = 'Combinator';
-        token.name = ' > ';
-        parent.data.sequence.appendList(new List([{type: 'Identifier', name: TYPE_NAME}]));
+        token.name = '>';
+        parent.data.sequence.insert(List.createItem({type: 'Identifier', name: TYPE_NAME}));
       }
     },
     emulate: function(token, parent, root, sourceMap, mapper, value) {
@@ -70,12 +70,7 @@ module.exports = function pseudoElementFactory(type, before) {
             var emulator = document.createElement(TYPE_NAME);
 
             if (elementHandler) {
-              if (before && element.childNodes.length) {
-                element.insertBefore(emulator, element.firstChild);
-              } else {
-                element.appendChild(emulator);
-              }
-
+              element.insertBefore(emulator, before ? element.firstChild : null);
               elementHandler(emulator);
               mapper.linkElements(parent.data.sequence.last(), emulator);
             }

@@ -29,7 +29,7 @@ module.exports = function pseudoClassFactory(type) {
 
           if (mappedElements) {
             mappedElements.forEach(function(element) {
-              element.classList.add(TYPE_NAME)
+              element.classList.add(TYPE_NAME);
             });
           }
         }

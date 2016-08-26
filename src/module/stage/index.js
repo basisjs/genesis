@@ -17,7 +17,7 @@ var view = new Node({
   },
 
   sorting: function(node) {
-    return Object.keys(node.condition).length;
+    return Object.keys(node.condition).length + JSON.stringify(node.condition);
   },
   childClass: {
     template: resource('./template/variant.tmpl'),

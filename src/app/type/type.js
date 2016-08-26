@@ -11,22 +11,22 @@ var TypeName = entity.createType('TypeName', {
 });
 
 /*
-TypeName.extendClass({
-  syncAction: service.createAction({
-    url: '/api/...',
-    success: function(data){
-      this.update(TypeName.reader(data));
-    }
-  })
-});
+ TypeName.extendClass({
+ syncAction: service.createAction({
+ url: '/api/...',
+ success: function(data){
+ this.update(TypeName.reader(data));
+ }
+ })
+ });
 
-TypeName.all.setSyncAction(service.createAction({
-  url: '/api/...',
-  success: function(data){
-    this.sync(basis.array(data).map(TypeName.reader));
-  }
-}));
-*/
+ TypeName.all.setSyncAction(service.createAction({
+ url: '/api/...',
+ success: function(data){
+ this.sync(basis.array(data).map(TypeName.reader));
+ }
+ }));
+ */
 
 //
 // export names

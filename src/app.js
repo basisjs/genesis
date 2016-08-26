@@ -7,7 +7,7 @@ require('basis.router').start();
 module.exports = require('basis.app').create({
   title: 'Template state generator',
 
-  init: function(){
+  init: function() {
     var list = require('./module/list/index.js');
     var stage = require('./module/stage/index.js');
     var backChooser = require('./module/back-chooser/index.js');
@@ -24,7 +24,7 @@ module.exports = require('basis.app').create({
         backChooser: backChooser,
         back: Value
           .from(backChooser, 'selectionChanged', 'selection')
-          .pipe('itemsChanged', function(selection){
+          .pipe('itemsChanged', function(selection) {
             return selection.pick().value;
           })
       }

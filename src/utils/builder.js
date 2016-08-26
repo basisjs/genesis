@@ -1,6 +1,6 @@
 var domUtils = require('basis.dom');
 var parse = require('csso:parser/index');
-var walk = require('utils.walker');
+var walk = require('utils.walker').all;
 var sortObject = require('utils.index').sortObject;
 var translate = require('csso:utils/translate.js');
 var StyleDOMMapper = require('utils.styleDomMapper');
@@ -157,7 +157,6 @@ Builder.prototype.generateSourceMap = function(sourceAst, processedAST) {
 };
 
 Builder.prototype.handleStyle = function(style, emulators) {
-  var that = this;
   var states = {};
 
   walk(style.processedAST, {
@@ -170,8 +169,8 @@ Builder.prototype.handleStyle = function(style, emulators) {
           newStates = emulator.getStates();
 
           if (!newStates || !newStates.length) {
-            if (that.emulators['*'].indexOf(emulator) < 0) {
-              that.emulators['*'].push(emulator)
+            if (this.emulators['*'].indexOf(emulator) < 0) {
+              this.emulators['*'].push(emulator)
             }
           }
 
@@ -181,21 +180,21 @@ Builder.prototype.handleStyle = function(style, emulators) {
             if (!states[stateString]) {
               for (var stateName in state) {
                 if (state.hasOwnProperty(stateName)) {
-                  that.emulators[stateName] = that.emulators[stateName] || [];
+                  this.emulators[stateName] = this.emulators[stateName] || [];
 
-                  if (that.emulators[stateName].indexOf(emulator) < 0) {
-                    that.emulators[stateName].push(emulator)
+                  if (this.emulators[stateName].indexOf(emulator) < 0) {
+                    this.emulators[stateName].push(emulator)
                   }
                 }
               }
 
               states[stateString] = state;
             }
-          });
-        });
-      });
+          }, this);
+        }, this);
+      }, this);
     }
-  });
+  }, this);
   style.processed.updateCssText(translate(style.processedAST));
 
   return basis.object.values(states);
