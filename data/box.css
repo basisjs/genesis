@@ -1,0 +1,34 @@
+.test
+{
+  position: relative;
+  width: 50px;
+  display: inline-block;
+  line-height: 50px;
+  text-align: center;
+  border: 2px solid gold;
+  background: palegoldenrod;
+}
+
+.test:before {
+  content: 'before';
+  display: block;
+  box-shadow: -10px -10px 10px red;
+}
+
+.test:after {
+  content: 'after';
+  /*content: 222;*/
+  /*content: "("attr(class)")";*/
+  /*content: "("url(http://htmlbook.ru/themes/hb/img/logo.png)")";*/
+  display: block;
+  box-shadow: 10px 10px 10px green;
+}
+
+
+.test:hover {
+  background: cornflowerblue;
+}
+
+.test_disabled {
+  background: grey;
+}

@@ -18,7 +18,7 @@ module.exports = new Node({
     'rgb(128, 128, 128)',
     'rgb(192, 192, 192)',
     'white'
-  ].map(function(back, idx){
+  ].map(function(back, idx) {
     return {
       value: back,
       selected: !idx

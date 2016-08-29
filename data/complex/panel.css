@@ -1,0 +1,15 @@
+.panel
+{
+  border: 2px solid #2F6FAD;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.header
+{
+  font-size: 32px;
+}
+
+.panel .button {
+  margin: 0 10px;
+}
