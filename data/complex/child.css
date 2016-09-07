@@ -1,0 +1,19 @@
+.container::before1
+{
+  content: 'before';
+  display: block;
+  color: blue;
+}
+
+.container::after
+{
+  content: 'after';
+  display: block;
+  color: red;
+}
+
+.block:first-child
+{
+  color: blueviolet;
+  font-size: large;
+}

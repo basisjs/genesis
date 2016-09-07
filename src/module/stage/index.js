@@ -63,7 +63,10 @@ function rebuildStage() {
 
     var resource = basis.resource(url);
 
-    vBuilder = new VariantBuilder(resource, [emulators.active, emulators.hover, emulators.focus, emulators.after, emulators.before]);
+    vBuilder = new VariantBuilder(resource, Object.keys(emulators).map(function(name) {
+      return emulators[name];
+    }));
+
     vBuilder.styles.forEach(function(style) {
       style.original.attach(rebuildStage);
     });

@@ -1,18 +1,33 @@
+var walk = require('utils.walker').all;
+
 module.exports = function pseudoClassFactory(type) {
   var TYPE_NAME = 'pseudo-class-' + type + '__' + basis.genUID();
 
   return {
-    getStates: function() {
-      var states = [];
-      var state = {};
+    getStates: function(AST) {
+      var allow = false;
 
-      state[type] = false;
-      states.push(state);
-      state = {};
-      state[type] = true;
-      states.push(state);
+      //todo сделать оптимально - построить индекс по таким местам или не обходить оставшиеся узлы если стало понятно, что эмуляция нужна
+      walk(AST, {
+        PseudoClass: function(token) {
+          if (token.type == 'PseudoClass' && token.name == type) {
+            allow = true;
+          }
+        }
+      });
 
-      return states;
+      if (allow) {
+        var states = [];
+        var state = {};
+
+        state[type] = false;
+        states.push(state);
+        state = {};
+        state[type] = true;
+        states.push(state);
+
+        return states;
+      }
     },
     handleToken: function(token, parent, root, sourceMap) {
       if (token.type == 'PseudoClass' && token.name == type) {

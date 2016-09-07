@@ -81,6 +81,11 @@ function Builder(resource, emulators) {
   }, this);
 
   this.states = this.combine(this.states);
+
+  if (!this.states.length) {
+    this.states.push({hasState: false});
+  }
+
   this.states.forEach(function(state) {
     var newVariant = this.buildVariant(state);
 
@@ -139,13 +144,17 @@ Builder.prototype.generateSourceMap = function(sourceAst, processedAST) {
   // todo возможно есть более простой способ сфлэтить все селекторы из ast
   walk(sourceAst, {
     SimpleSelector: function(token) {
-      token.sequence.each(sourceTokens.push.bind(sourceTokens));
+      token.sequence.each(function(part) {
+        sourceTokens.push(part)
+      });
     }
   });
 
   walk(processedAST, {
     SimpleSelector: function(token) {
-      token.sequence.each(processedTokens.push.bind(processedTokens));
+      token.sequence.each(function(part) {
+        processedTokens.push(part)
+      });
     }
   });
 
@@ -166,9 +175,9 @@ Builder.prototype.handleStyle = function(style, emulators) {
           var newStates;
 
           emulator.handleToken(part, parent, style.processedAST, style.sourceMap);
-          newStates = emulator.getStates();
+          newStates = emulator.getStates(style.sourceAST) || [];
 
-          if (!newStates || !newStates.length) {
+          if (!newStates.length) {
             if (this.emulators['*'].indexOf(emulator) < 0) {
               this.emulators['*'].push(emulator)
             }

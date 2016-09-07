@@ -30,6 +30,7 @@ module.exports = new Node({
     'data/checkbox.tmpl',
     'data/window.tmpl',
     'data/box.tmpl',
+    'data/complex/child.tmpl',
     'data/complex/panel.tmpl',
     'data/complex/button.tmpl'
   ].map(function(url) {
