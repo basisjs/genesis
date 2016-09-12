@@ -2,47 +2,23 @@ var List = require('csso:utils/list.js');
 var walk = require('utils.walker').rules;
 var translate = require('csso:utils/translate.js');
 var pseudoContentFactory = require('./contentFactory');
-var nthFactory = require('./nthFactory');
 
 module.exports = function pseudoElementFactory(type, before) {
   var TYPE_NAME = 'pseudo-element-' + type + '__' + basis.genUID();
 
   return {
-    getStates: function(AST) {
-      // no states
+    /**@cut*/__debugName: TYPE_NAME,
+    getStates: function() {
+      return false;
     },
     handleToken: function(token, parent, root, sourceMap) {
       if (token.type == 'PseudoElement' && token.name == type) {
-        var sourceToken = sourceMap.get(token);
         var newToken = List.createItem({type: 'Identifier', name: TYPE_NAME});
 
         token.type = 'Combinator';
         token.name = '>';
 
-        sourceMap.delete(token);
-        sourceMap.set(newToken.data, sourceToken);
-
         parent.data.sequence.insert(newToken);
-
-        /*
-        basis.array.from(element.children).forEach(function(child) {
-         var selectors = mapper.byElement(child);
-
-         if (selectors) {
-         selectors.forEach(function(token) {
-         var handleNth = nthFactory(token, child);
-
-         if (handleNth) {
-         //console.log(selectors);
-         console.log(token, handleNth);
-         handleNth.change(before ? 1 : -1);
-         handleNth.apply();
-         needToRetranslate = true;
-         }
-         });
-         }
-         });
-         */
       }
     },
     emulate: function(token, parent, root, sourceMap, mapper, value) {
@@ -53,7 +29,6 @@ module.exports = function pseudoElementFactory(type, before) {
       if (sourceToken && sourceToken.type == 'PseudoElement' && sourceToken.name == type) {
         var elementHandler;
         var mappedElements = mapper.bySelector(token);
-        //console.log(token, mappedElements)
         var allowToEmulate = mappedElements && mappedElements.filter(function(element) {
             var list = new List(parent.data.sequence.toArray().slice(0, -2));
 

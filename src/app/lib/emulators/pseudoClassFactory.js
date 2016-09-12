@@ -4,6 +4,7 @@ module.exports = function pseudoClassFactory(type) {
   var TYPE_NAME = 'pseudo-class-' + type + '__' + basis.genUID();
 
   return {
+    /**@cut*/__debugName: TYPE_NAME,
     getStates: function(AST) {
       var allow = false;
 
