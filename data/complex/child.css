@@ -1,0 +1,19 @@
+.container::before
+{
+  content: 'before';
+  display: block;
+  color: blue;
+}
+
+.container::after
+{
+  content: 'after';
+  display: block;
+  color: red;
+}
+
+.container .block:nth-child(odd)
+{
+  color: blueviolet;
+  font-size: large;
+}

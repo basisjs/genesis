@@ -42,8 +42,6 @@ function sortObject(obj) {
 }
 
 module.exports = {
-  walk: require('./walker'),
-  selectorMapper: require('./styleDomMapper'),
   simpleEqual: simpleEqual,
   uniqueObjects: uniqueObjects,
   sortObject: sortObject

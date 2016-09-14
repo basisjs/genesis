@@ -10,6 +10,17 @@
   font-size: 32px;
 }
 
-.panel .button {
+.panel .button
+{
   margin: 0 10px;
+}
+
+.buttons::before
+{
+  content: 'before buttons';
+}
+
+.buttons .button:first-child::before
+{
+  content: 'first button';
 }

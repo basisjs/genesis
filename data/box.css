@@ -9,13 +9,13 @@
   background: palegoldenrod;
 }
 
-.test:before {
+.test::before {
   content: 'before';
   display: block;
   box-shadow: -10px -10px 10px red;
 }
 
-.test:after {
+.test::after {
   content: 'after';
   /*content: 222;*/
   /*content: "("attr(class)")";*/

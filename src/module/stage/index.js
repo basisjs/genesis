@@ -1,8 +1,9 @@
 var Value = require('basis.data').Value;
 var Node = require('basis.ui').Node;
 var router = require('basis.router');
-var VariantBuilder = require('utils.builder');
-var emulators = require('utils.emulators.index');
+var Builder = require('app.lib.builder');
+var Generator = require('app.lib.generator.basis');
+var emulators = require('app.lib.emulators.index');
 var sortObject = require('utils.index').sortObject;
 
 require('basis.l10n').setCultureList('ru-RU');
@@ -17,7 +18,7 @@ var view = new Node({
   },
 
   sorting: function(node) {
-    return Object.keys(node.condition).length + JSON.stringify(node.condition);
+    return Object.keys(node.states).length + JSON.stringify(node.states);
   },
   childClass: {
     template: resource('./template/variant.tmpl'),
@@ -25,18 +26,18 @@ var view = new Node({
       Node.prototype.init.call(this);
 
       // копируем объект и сортируем его свойства
-      this.condition = sortObject(basis.object.merge(this.condition));
+      this.states = sortObject(basis.object.merge(this.states));
 
       // удаляем false-состояния из комбинации
-      for (var stateName in this.condition) {
-        if (this.condition.hasOwnProperty(stateName) && this.condition[stateName] === false) {
-          delete this.condition[stateName];
+      for (var stateName in this.states) {
+        if (this.states.hasOwnProperty(stateName) && this.states[stateName] === false) {
+          delete this.states[stateName];
         }
       }
     },
     binding: {
-      condition: function(node) {
-        return JSON.stringify(node.condition);
+      states: function(node) {
+        return JSON.stringify(node.states);
       },
       html: 'html',
       isBlock: 'isBlock'
@@ -45,6 +46,7 @@ var view = new Node({
 });
 
 var vBuilder;
+var tGenerator;
 
 function rebuildStage() {
   var url = selectedTemplate.value;
@@ -55,21 +57,28 @@ function rebuildStage() {
 
   if (url) {
     if (vBuilder) {
-      vBuilder.destroy();
-      vBuilder.styles.forEach(function(style) {
-        style.original.detach(rebuildStage);
+      tGenerator.getStyles().forEach(function(style) {
+        style.physResource.detach(rebuildStage);
       });
+      vBuilder.destroy();
+      tGenerator.destroy();
     }
 
-    var resource = basis.resource(url);
+    tGenerator = new Generator({url: url});
+    vBuilder = new Builder({generator: tGenerator, emulators: basis.object.values(emulators)});
 
-    vBuilder = new VariantBuilder(resource, [emulators.active, emulators.hover, emulators.focus, emulators.after, emulators.before]);
-    vBuilder.styles.forEach(function(style) {
-      style.original.attach(rebuildStage);
+    tGenerator.getStyles().forEach(function(style) {
+      style.physResource.attach(rebuildStage);
     });
 
-    ignoreCount.set(vBuilder.getIgnoredCount());
-    view.setChildNodes(vBuilder.getAcceptedVariants());
+    ignoreCount.set(vBuilder.ignoredVariantsCount);
+    view.setChildNodes(vBuilder.variants.map(function(variant) {
+      return {
+        states: variant.states,
+        html: variant.wrapper,
+        isBlock: variant.isBlock
+      };
+    }));
   }
 }
 

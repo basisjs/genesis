@@ -51,7 +51,7 @@ StyleDOMMapper.prototype.linkElements = function(token, elements) {
   var selector = translate(token);
   var mappedElements = this.selectorElementMap.get(token) || [];
 
-  elements = Array.isArray(elements) ? element : basis.array.from(elements)
+  elements = Array.isArray(elements) ? elements : basis.array.from(elements);
   elements.forEach(function(element) {
     var mappedSelectors = this.elementSelectorMap.get(element) || [];
 
@@ -75,18 +75,24 @@ StyleDOMMapper.prototype.map = function(root, processedAST, sourceMap) {
       var selector = translate(token);
       var stack = [];
 
-      // console.group('full selector', selector, token);
+      //console.group('full selector', selector, token);
       token.sequence.each(function(part) {
         var sourcePart = sourceMap.get(part) || part;
 
+        //console.log('SP', part, '=>', sourcePart)
+
         // пропускаем псевдо классы/элементы, иначе querySelectorAll не найдет узлы
-        if (sourcePart.type != 'PseudoClass' && sourcePart.type != 'PseudoElement') {
+        if ((sourcePart.type != 'PseudoClass' || sourcePart.type == 'PseudoClass' && sourcePart.name == 'first-element') && sourcePart.type != 'PseudoElement') {
           stack.push(sourcePart);
         }
 
         // добавляем комбинатор в стек, но не делаем запрос в dom и не линкуем элементы
         if (sourcePart.type == 'Combinator') {
           return;
+        }
+
+        if (stack.length && stack[stack.length - 1].type == 'Combinator') {
+          stack.pop();
         }
 
         var partSelector = translate({type: 'SimpleSelector', sequence: new List(stack)});
@@ -97,7 +103,7 @@ StyleDOMMapper.prototype.map = function(root, processedAST, sourceMap) {
         this.linkElements(part, elements);
         // console.groupEnd();
       }, this);
-      // console.groupEnd();
+      //console.groupEnd();
     }
   }, this);
 };
