@@ -1,4 +1,4 @@
-.container::before1
+.container::before
 {
   content: 'before';
   display: block;
@@ -12,7 +12,7 @@
   color: red;
 }
 
-.block:first-child
+.container .block:nth-child(odd)
 {
   color: blueviolet;
   font-size: large;

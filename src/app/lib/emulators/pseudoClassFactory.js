@@ -30,7 +30,7 @@ module.exports = function pseudoClassFactory(type) {
         return states;
       }
     },
-    handleToken: function(token, parent, root, sourceMap) {
+    handleToken: function(token, parent, root, sourceMap, mapper) {
       if (token.type == 'PseudoClass' && token.name == type) {
         token.type = 'Class';
         token.name = TYPE_NAME;

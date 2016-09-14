@@ -52,8 +52,8 @@ module.exports = basis.Class(null, {
             var emulators = getAllEmulators(this.emulators);
 
             emulators.forEach(function(emulator) {
-              emulator.handleToken(part, parent, resource.AST, resource.sourceMap);
-            });
+              emulator.handleToken(part, parent, resource.AST, resource.sourceMap, this.styleDOMMapper);
+            }, this);
           }, this);
         }
       }, this);

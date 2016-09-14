@@ -51,7 +51,7 @@ StyleDOMMapper.prototype.linkElements = function(token, elements) {
   var selector = translate(token);
   var mappedElements = this.selectorElementMap.get(token) || [];
 
-  elements = Array.isArray(elements) ? element : basis.array.from(elements)
+  elements = Array.isArray(elements) ? elements : basis.array.from(elements);
   elements.forEach(function(element) {
     var mappedSelectors = this.elementSelectorMap.get(element) || [];
 
